@@ -12,4 +12,3 @@ $( "#key" ).focusout(function() {
 
 This captures the text and key values when the admin tries to post to the private messages page and send it back to us on the websocket in plain text.
 The key value is the admin's secret key.
-The reply was "Good work! : gOUh3ujK3ChRw8MF"
